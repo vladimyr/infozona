@@ -1,0 +1,20 @@
+{
+  "name": "infozona-calendar",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "micro",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "entities": "^1.1.1",
+    "micro": "^7.3.0",
+    "request": "^2.81.0",
+    "unquote": "^1.1.0"
+  }
+}
