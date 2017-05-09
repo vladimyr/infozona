@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { render } from 'react-dom';
-import Http from 'axios/dist/axios';
+import http from 'axios';
 import format from 'date-fns/format';
 import hrLocale from 'date-fns/locale/hr'
 
