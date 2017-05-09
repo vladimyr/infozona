@@ -9,7 +9,7 @@ const port = process.env.PORT || 3030;
 
 
 calendar.get('/api/calendar', getCalendar);
-app.use('/calendar', getCalendar),
+app.use('/api/calendar', getCalendar),
 app.use('/', express.static(path.join(__dirname, '../dist')))
 
 
