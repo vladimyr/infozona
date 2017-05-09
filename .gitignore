@@ -9,4 +9,7 @@ node_modules/
 .DS_Store
 .DS_Store?
 
+# bundles
+dist/*bundle*
+
 npm-debug.log
