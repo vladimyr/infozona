@@ -74,7 +74,7 @@ const devConfig = (() => {
       }
     }
   };
-  return Object.assign(dev, baseConfig);
+  return Object.assign({}, dev, baseConfig);
 })();
 
 module.exports = env => env === 'dev' ? devConfig : baseConfig;
