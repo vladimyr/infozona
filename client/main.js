@@ -44,8 +44,7 @@ function Dates(dates) {
 }
 
 Http.get('/api/calendar')
-  .then((response) => response.data)
-  .then((data) => Dates(data))
+  .then(({ data }) => Dates(data))
   .then((dates) => {
     render(dates,
       document.getElementById('app')

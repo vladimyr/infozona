@@ -3,6 +3,9 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const defaultPort = require('./package.json').config.port;
+
+const port = process.env.PORT || defaultPort;
 
 let baseConfig = {
   entry: [
@@ -44,9 +47,7 @@ let baseConfig = {
     }, {
       test: /\.(woff2?|svg)$/,
       loader: 'url-loader',
-      query: {
-        limit: 10000
-      }
+      query: { limit: 10000 }
     }, {
       test: /\.(ttf|eot)$/,
       use: 'file-loader'
@@ -62,17 +63,18 @@ let baseConfig = {
   ]
 };
 
-module.exports = env => {
-  let config = Object.assign({}, baseConfig);
-  if (env === 'dev') {
-    config.devtool = 'eval';
-    config.devServer = {
+const devConfig = (() => {
+  const dev = {
+    devtool: 'eval',
+    devServer: {
       contentBase: path.join(__dirname, "dist"),
       noInfo: true,
       proxy: {
-        "/api": "http://localhost:3030"
+        '/api': `http://localhost:${port}`
       }
     }
-  }
-  return config;
-};
+  };
+  return Object.assign(dev, baseConfig);
+})();
+
+module.exports = env => env === 'dev' ? devConfig : baseConfig;
