@@ -3,7 +3,6 @@
 const request = require('request');
 const cheerio = require('cheerio');
 const entities = require('entities');
-const { send } = require('micro');
 const { parse } = require('url');
 const extractData = require('./scraper.js');
 
@@ -13,7 +12,7 @@ const url = (lang='hr') =>
 module.exports = (req, res) => {
   const query = parse(req.url, true).query;
   getCalendar(query.lang)
-    .then(calendar => send(res, 200, calendar));
+    .then(calendar => res.status(200).json(calendar));
 };
 
 function getCalendar(lang='hr') {
