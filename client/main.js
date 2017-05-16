@@ -43,7 +43,7 @@ function Dates(dates) {
   </div>
 }
 
-Http.get('/api/calendar')
+http.get('/api/calendar')
   .then(({ data }) => Dates(data))
   .then((dates) => {
     render(dates,
