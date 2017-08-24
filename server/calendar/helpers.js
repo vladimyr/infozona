@@ -2,6 +2,7 @@
 
 const url = require('url');
 const entities = require('entities');
+const sanitizeHtml = require('sanitize-html');
 const unquote = require('unquote');
 
 const reDate = /^\d{1,2}\/\d{1,2}\d{4}$/;
@@ -10,8 +11,8 @@ const reUrl = /url\((.*?)\)/;
 const baseUrl = 'http://infozona.hr';
 
 module.exports = {
-  readDate, readTime,
-  readInfo, readPhotoUrl, readLink
+  readDate, readTime, readInfo,
+  readPhotoUrl, readLink, sanitizeHTML
 };
 
 function readDate($date) {
@@ -70,3 +71,12 @@ function normalizeDateString(date) {
   dateChunks.splice(0,0, dateChunks.splice(1,1)[0]);
   return dateChunks.join('/');
 }
+
+function sanitizeHTML(data) {
+  return sanitizeHtml(data, {
+    textFilter(text) {
+      return text.replace(/\n/g, '<br>')
+    }
+  })
+}
+

@@ -1,8 +1,8 @@
 'use strict';
 
 const {
-  readDate, readTime,
-  readInfo, readPhotoUrl, readLink
+  readDate, readTime, readInfo,
+  readPhotoUrl, readLink, sanitizeHTML
 } = require('./helpers.js');
 
 const HR_LOCALES = {
@@ -38,9 +38,11 @@ function readEvent($, $el) {
 
   const title = $event.find('h2').text();
   const info = readInfo($content.eq(0));
-  const description = $content.eq(1).text();
   const image = readPhotoUrl($event.find('.foto'));
   const link = readLink($content.eq(1).next('a'));
+
+  let description = $content.eq(1).text();
+  description = sanitizeHTML(description);
 
   return {
     category: info[HR_LOCALES.category],
