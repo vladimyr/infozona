@@ -24,20 +24,25 @@ function Event({ event }) {
   </div>;
 }
 
-function Date({ date }) {
-  const dateEvents = date.events.map(event => <Event event={event} />)
+function Date({ date, events }) {
+  const eventList = events.map(event => <Event event={event} />);
+  const dateChunks = date.split('/');
+  const normalizedDateString = `${dateChunks[1]}/${dateChunks[0]}`
+  const formatedDate = format(normalizedDateString, 'D. MMMM', { locale: hrLocale })
+
   return <div className="date list-group">
     <h1>
-      { format(date.date, 'D. MMMM', { locale: hrLocale })}
+      { formatedDate }
     </h1>
     <div>
-      { dateEvents }
+      { eventList }
     </div>
   </div>
 }
 
 function Dates(dates) {
-  const dateList = dates.map(date => <Date date={date} />)
+  const dateList = dates.map(({ date, events }) => <Date date={date} events={events} />)
+
   return <div className="dateList container">
     <div>{ dateList }</div>;
   </div>
