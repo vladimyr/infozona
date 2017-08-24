@@ -19,7 +19,7 @@ function Event({ event }) {
         <h4>
           { location }
           &nbsp;
-          <EventTime time={time}/>
+          <EventTime time={ time }/>
         </h4>
         <span className="label label-primary">{ category }</span>
       </div>
