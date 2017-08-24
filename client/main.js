@@ -12,38 +12,47 @@ function Event({ event }) {
   const eventDescription = desc => ({ __html: desc.replace(/\n/g, '<br>')});
   const eventCategory = event.info && event.info.Kategorija ? event.info.Kategorija : null;
 
-  return <div className={ `event list-group-item ${ eventCategory ? eventCategory.toLowerCase() : null }` }>
-    <h2>{ event.title } <EventTime time={event.time} /> </h2>
-    <p>
-      <span>{ event.info && event.info.Lokacija ? event.info.Lokacija : null }</span>
-      <span> | </span>
-      <span>{ eventCategory }</span>
-    </p>
-    <p dangerouslySetInnerHTML={ eventDescription(event.description) }></p>
-    <EventLink link={ event.link } />
-  </div>;
+  return (
+    <li className={ `event list-group-item ${ eventCategory ? eventCategory.toLowerCase() : null }` }>
+      <h2>{ event.title }</h2>
+      <p>
+        <h4>
+          { event.info && event.info.Lokacija ? event.info.Lokacija : null }
+          &nbsp;
+          <EventTime time={event.time}/>
+        </h4>
+        <span className="label label-primary">{ eventCategory }</span>
+      </p>
+      <p dangerouslySetInnerHTML={ eventDescription(event.description) }></p>
+      <EventLink link={ event.link } />
+    </li>
+  );
 }
 
-function Date({ date }) {
-  const dateEvents = date.events.map(event => <Event event={event} />)
-  return <div className="date list-group">
-    <h1>
-      { format(date.date, 'D. MMMM', { locale: hrLocale })}
-    </h1>
-    <div>
-      { dateEvents }
+function Date({ date, events }) {
+  const dateChunks = date.split('/');
+  const normalizedDateString = `${dateChunks[1]}/${dateChunks[0]}`
+  const formatedDate = format(normalizedDateString, 'D. MMMM', { locale: hrLocale })
+
+  return (
+    <div className="date">
+      <h1>{ formatedDate }</h1>
+      <ul className="list-group">
+        { events.map(event => <Event event={ event } />) }
+      </ul>
     </div>
-  </div>
+  );
 }
 
 function Dates(dates) {
-  const dateList = dates.map(date => <Date date={date} />)
-  return <div className="dateList container">
-    <div>{ dateList }</div>;
-  </div>
+  return (
+    <div className="dateList container">
+      { dates.map(({ date, events }) => <Date date={ date } events={ events } />) }
+    </div>
+  );
 }
 
-Http.get('/api/calendar')
+http.get('/api/calendar')
   .then(({ data }) => Dates(data))
   .then((dates) => {
     render(dates,
