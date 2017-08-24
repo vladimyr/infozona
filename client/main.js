@@ -7,36 +7,32 @@ import format from 'date-fns/format';
 import hrLocale from 'date-fns/locale/hr'
 
 function Event({ event }) {
+  const { category, title, date, time, location, description, image, link } = event;
+  const Description = desc => ({ __html: desc });
   const EventLink = ({ link }) => link ? <a href={ link.url }>{ link.label }</a> : null;
   const EventTime = ({ time }) => time ? <span>@{ time } h</span> : null;
-  const eventDescription = desc => ({ __html: desc.replace(/\n/g, '<br>')});
-  const eventCategory = event.info && event.info.Kategorija ? event.info.Kategorija : null;
 
   return (
-    <li className={ `event list-group-item ${ eventCategory ? eventCategory.toLowerCase() : null }` }>
-      <h2>{ event.title }</h2>
-      <p>
+    <li className="event list-group-item">
+      <h2>{ title }</h2>
+      <div>
         <h4>
-          { event.info && event.info.Lokacija ? event.info.Lokacija : null }
+          { location }
           &nbsp;
-          <EventTime time={event.time}/>
+          <EventTime time={time}/>
         </h4>
-        <span className="label label-primary">{ eventCategory }</span>
-      </p>
-      <p dangerouslySetInnerHTML={ eventDescription(event.description) }></p>
-      <EventLink link={ event.link } />
+        <span className="label label-primary">{ category }</span>
+      </div>
+      <p dangerouslySetInnerHTML={ Description(description) }></p>
+      <EventLink link={ link } />
     </li>
   );
 }
 
 function Date({ date, events }) {
-  const dateChunks = date.split('/');
-  const normalizedDateString = `${dateChunks[1]}/${dateChunks[0]}`
-  const formatedDate = format(normalizedDateString, 'D. MMMM', { locale: hrLocale })
-
   return (
     <div className="date">
-      <h1>{ formatedDate }</h1>
+      <h1>{ format(date, 'D. MMMM', { locale: hrLocale }) }</h1>
       <ul className="list-group">
         { events.map(event => <Event event={ event } />) }
       </ul>
