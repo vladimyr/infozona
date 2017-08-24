@@ -1,21 +1,28 @@
 'use strict';
 
 const {
-  readDate, readTime,
-  readInfo, readPhotoUrl, readLink
+  readDate, readTime, readInfo,
+  readPhotoUrl, readLink, sanitizeHTML
 } = require('./helpers.js');
 
-module.exports = function ($, $el) {
+const HR_LOCALES = {
+  location: 'Lokacija',
+  date: 'Datum',
+  ticket: 'Ulaznica',
+  category: 'Kategorija'
+}
+
+module.exports = ($, $el) => {
   return $el.find('li a')
     .map((_, el) => readDay($, $(el)))
     .get();
 };
 
 function readDay($, $el) {
-  let href = $el.attr('href');
-  let date = readDate($el.find('.dan'));
+  const href = $el.attr('href');
+  const date = readDate($el.find('.dan'));
 
-  let events = $(href).find('a')
+  const events = $(href).find('a')
     .map((_, el) => readEvent($, $(el)))
     .get();
 
@@ -23,25 +30,29 @@ function readDay($, $el) {
 }
 
 function readEvent($, $el) {
-  let href = $el.attr('href');
-  let time = readTime($el.find('.dan'));
+  const href = $el.attr('href');
+  const time = readTime($el.find('.dan'));
 
-  let $event = $(href);
-  let $content = $(href).find('p');
+  const $event = $(href);
+  const $content = $(href).find('p');
 
-  let title = $event.find('h2').text();
-  let info = readInfo($content.eq(0));
+  const title = $event.find('h2').text();
+  const info = readInfo($content.eq(0));
+  const image = readPhotoUrl($event.find('.foto'));
+  const link = readLink($content.eq(1).next('a'));
+
   let description = $content.eq(1).text();
+  description = sanitizeHTML(description);
 
-  let event = { title, time, info, description };
-
-  // Extract event photo.
-  let image = readPhotoUrl($event.find('.foto'));
-  if (image) event.image = image;
-
-  // Parse read more link.
-  let link = readLink($content.eq(1).next('a'));
-  if (link) event.link = link;
-
-  return event;
+  return {
+    category: info[HR_LOCALES.category],
+    title,
+    date: info[HR_LOCALES.date],
+    time,
+    location: info[HR_LOCALES.location],
+    ticket: info[HR_LOCALES.ticket],
+    description,
+    image,
+    link
+  };
 }

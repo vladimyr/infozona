@@ -2,6 +2,7 @@
 
 const url = require('url');
 const entities = require('entities');
+const sanitizeHtml = require('sanitize-html');
 const unquote = require('unquote');
 
 const reDate = /^\d{1,2}\/\d{1,2}\d{4}$/;
@@ -10,55 +11,72 @@ const reUrl = /url\((.*?)\)/;
 const baseUrl = 'http://infozona.hr';
 
 module.exports = {
-  readDate, readTime,
-  readInfo, readPhotoUrl, readLink
+  readDate, readTime, readInfo,
+  readPhotoUrl, readLink, sanitizeHTML
 };
 
 function readDate($date) {
   let date = $date.text().trim();
-  if (reDate.test(date)) return date;
-  return formatDate(new Date());
+  date = normalizeDateString(date);
+  return reDate.test(date) ? date : formatDate(new Date());
 }
 
 function readTime($time) {
-  let [ time ] = $time.text().trim().split(/\s+/);
+  const [ time ] = $time.text().trim().split(/\s+/);
   return time.replace(/\./, ':');
 }
 
 function readInfo($info) {
-  let html = entities.decode($info.html());
-  let records = html.trim().split('<br>');
-  records = records.filter(r => r.length > 0);
-
-  let info = {};
-  records.forEach(record => {
-    let [key, val] = record.split(/:\s*/);
-    info[key] = val;
-  });
-  return info;
+  const html = entities.decode($info.html());
+  return html
+    .trim()
+    .split('<br>')
+    .filter(r => r.length > 0)
+    .reduce((info, record) => {
+      const [key, val] = record.split(/:\s*/);
+      info[key] = val;
+      return info
+    }, {});
 }
 
 function readPhotoUrl($photo) {
   if ($photo.length <= 0) return;
 
-  let style = $photo.attr('style');
-  let match = style.match(reUrl);
+  const match = $photo
+    .attr('style')
+    .match(reUrl);
   if (!match || !match[1]) return;
 
-  let path = unquote(match[1].trim());
+  const path = unquote(match[1].trim());
   return url.resolve(baseUrl, path);
 }
 
 function readLink($link) {
   if ($link.length <= 0) return;
-  let url = $link.attr('href');
-  let label = $link.text();
+
+  const url = $link.attr('href');
+  const label = $link.text();
   return { url, label };
 }
 
 function formatDate(date) {
-  let day = date.getDate();
-  let month = date.getMonth() + 1;
-  let year = date.getFullYear();
-  return `${ day }/${ month }/${ year }`;
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+  return `${ month }/${ day }/${ year }`;
 }
+
+function normalizeDateString(date) {
+  const dateChunks = date.split('/');
+  dateChunks.splice(0,0, dateChunks.splice(1,1)[0]);
+  return dateChunks.join('/');
+}
+
+function sanitizeHTML(data) {
+  return sanitizeHtml(data, {
+    textFilter(text) {
+      return text.replace(/\n/g, '<br>')
+    }
+  })
+}
+
