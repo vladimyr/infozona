@@ -15,9 +15,8 @@ function Event({ event }) {
   return <div className={ `event list-group-item ${ eventCategory ? eventCategory.toLowerCase() : null }` }>
     <h2>{ event.title } <EventTime time={event.time} /> </h2>
     <p>
-      <span>{ event.info && event.info.Lokacija ? event.info.Lokacija : null }</span>
-      <span> | </span>
-      <span>{ eventCategory }</span>
+      <h4>{ event.info && event.info.Lokacija ? event.info.Lokacija : null }</h4>
+      <span className="label label-primary">{ eventCategory }</span>
     </p>
     <p dangerouslySetInnerHTML={ eventDescription(event.description) }></p>
     <EventLink link={ event.link } />
