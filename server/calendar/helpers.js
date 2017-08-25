@@ -46,7 +46,7 @@ function readInfo($info) {
 function readPhotoUrl($photo) {
   if ($photo.length <= 0) return;
 
-  const match = $photo.attr('style').match(reUrl) || [];
+  const [match] = $photo.attr('style').match(reUrl) || [];
   if (!match) return;
 
   const path = unquote(match.trim());

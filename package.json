@@ -4,8 +4,8 @@
   "description": "",
   "main": "server/index.js",
   "scripts": {
-    "start": "export NODE_ENV=production && node server/index.js",
-    "start:dev": "node server/index.js & webpack-dev-server --env=dev",
+    "start": "NODE_ENV=production node server/index.js",
+    "start:dev": "nodemon server/index.js & webpack-dev-server --env=dev",
     "build": "webpack -p --env=prod --config ./webpack.config.js --display-modules",
     "build:dev": "webpack --env=dev --config ./webpack.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -27,11 +27,13 @@
     "express": "^4.15.2",
     "jquery": "^3.2.1",
     "moment": "^2.18.1",
+    "pify": "^3.0.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "request": "^2.81.0",
     "sanitize-html": "^1.14.1",
-    "unquote": "^1.1.0"
+    "unquote": "^1.1.0",
+    "url-join": "^2.0.2"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
@@ -47,6 +49,7 @@
     "html-webpack-plugin": "^2.28.0",
     "imports-loader": "^0.7.1",
     "node-sass": "^4.5.2",
+    "nodemon": "^1.11.0",
     "resolve-url-loader": "^2.0.2",
     "sass-loader": "^6.0.4",
     "style-loader": "^0.17.0",
