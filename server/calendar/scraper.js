@@ -31,28 +31,21 @@ function readDay($, $el) {
 
 function readEvent($, $el) {
   const href = $el.attr('href');
-  const time = readTime($el.find('.dan'));
-
   const $event = $(href);
   const $content = $(href).find('p');
 
-  const title = $event.find('h2').text();
   const info = readInfo($content.eq(0));
-  const image = readPhotoUrl($event.find('.foto'));
-  const link = readLink($content.eq(1).next('a'));
 
-  let description = $content.eq(1).text();
-  description = sanitizeHTML(description);
+  const event = {};
+  event.category = info[HR_LOCALES.category];
+  event.title = $event.find('h2').text();
+  event.date = info[HR_LOCALES.date];
+  event.time = readTime($el.find('.dan'));
+  event.location = info[HR_LOCALES.location];
+  event.description = sanitizeHTML($content.eq(1).text());
+  event.ticket = info[HR_LOCALES.ticket];
+  event.image = readPhotoUrl($event.find('.foto'));
+  event.link = readLink($content.eq(1).next('a'));
 
-  return {
-    category: info[HR_LOCALES.category],
-    title,
-    date: info[HR_LOCALES.date],
-    time,
-    location: info[HR_LOCALES.location],
-    ticket: info[HR_LOCALES.ticket],
-    description,
-    image,
-    link
-  };
+  return event;
 }
