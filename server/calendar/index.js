@@ -1,33 +1,33 @@
 'use strict';
 
-const request = require('request');
+const request = require('pify')(require('request'), { multiArgs: true });
 const cheerio = require('cheerio');
 const entities = require('entities');
 const { parse } = require('url');
+const urlJoin = require('url-join');
 const extractData = require('./scraper.js');
 
-const url = (lang='hr') =>
-  `http://infozona.hr/${ lang === 'en' ? 'calendar' : 'kalendar' }/mobile`;
+const baseUrl = 'http://infozona.hr';
 
-module.exports = (req, res) => {
-  const query = parse(req.url, true).query;
-  getCalendar(query.lang)
-    .then(calendar => res.status(200).json(calendar));
+module.exports = (req, res, next) => {
+  const { query = {} } = parse(req.url, true);
+  return fetchCalendar(query.lang)
+    .then(calendar => res.json(calendar))
+    .catch(err => next(err));
 };
 
-function getCalendar(lang='hr') {
-  return new Promise((resolve, reject) => {
-    request.get(url(lang), (err, resp) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-
-      let html = entities.decode(resp.body);
-      let $ = cheerio.load(html);
-      let $calendar = $('#kalendar');
-      let data = extractData($, $calendar);
-      resolve(data);
+function fetchCalendar(lang = 'hr') {
+  const url = calendarUrl(lang);
+  return request.get(url)
+    .then(([, body]) => {
+      const html = entities.decode(body);
+      const $ = cheerio.load(html);
+      const $calendar = $('#kalendar');
+      return extractData($, $calendar);
     });
-  });
+}
+
+function calendarUrl(lang = 'hr') {
+  const path = lang === 'en' ? '/calendar' : '/kalendar';
+  return urlJoin(baseUrl, path, '/mobile');
 }
