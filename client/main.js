@@ -7,7 +7,6 @@ import format from 'date-fns/format';
 import hrLocale from 'date-fns/locale/hr'
 
 const Link = ({ link }) => <a href={ link.url }>{ link.label }</a>;
-
 const Time = ({ time }) => <span>@{ time } h</span>;
 
 function Event({ event }) {
