@@ -23,10 +23,10 @@
   "dependencies": {
     "axios": "^0.16.1",
     "cheerio": "^0.22.0",
-    "date-fns": "^1.28.4",
     "entities": "^1.1.1",
     "express": "^4.15.2",
     "jquery": "^3.2.1",
+    "moment": "^2.18.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "request": "^2.81.0",

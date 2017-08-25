@@ -1,5 +1,6 @@
 'use strict';
 
+const moment = require('moment');
 const {
   readDate, readTime, readInfo,
   readPhotoUrl, readLink, sanitizeHTML
@@ -37,15 +38,17 @@ function readEvent($, $el) {
   const info = readInfo($content.eq(0));
 
   const event = {};
-  event.category = info[HR_LOCALES.category];
-  event.title = $event.find('h2').text();
-  event.date = info[HR_LOCALES.date];
-  event.time = readTime($el.find('.dan'));
-  event.location = info[HR_LOCALES.location];
-  event.description = sanitizeHTML($content.eq(1).text());
-  event.ticket = info[HR_LOCALES.ticket];
-  event.image = readPhotoUrl($event.find('.foto'));
-  event.link = readLink($content.eq(1).next('a'));
+  Object.assign(event, {
+    category: info[HR_LOCALES.category],
+    title: $event.find('h2').text(),
+    date: moment(info[HR_LOCALES.date], 'DD/MM/YYYY').format(),
+    time: readTime($el.find('.dan')),
+    location: info[HR_LOCALES.location],
+    description: sanitizeHTML($content.eq(1).text()),
+    ticket: info[HR_LOCALES.ticket],
+    image: readPhotoUrl($event.find('.foto')),
+    link: readLink($content.eq(1).next('a'))
+  })
 
   return event;
 }

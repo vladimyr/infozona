@@ -2,6 +2,7 @@
 
 const url = require('url');
 const entities = require('entities');
+const moment = require('moment');
 const sanitizeHtml = require('sanitize-html');
 const unquote = require('unquote');
 
@@ -21,7 +22,7 @@ module.exports = {
 
 function readDate($date) {
   let date = $date.text().trim();
-  return reDate.test(date) ? normalizeHrDateString(date) : formatDate(new Date());
+  return moment(date, 'DD/MM/YYYY').isValid() ? moment(date, 'DD/MM/YYYY').format() : moment().format();
 }
 
 function readTime($time) {
@@ -58,20 +59,4 @@ function readLink($link) {
   const url = $link.attr('href');
   const label = $link.text();
   return { url, label };
-}
-
-function formatDate(date) {
-  const day = date.getDate();
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
-  return `${ month }/${ day }/${ year }`;
-}
-
-function normalizeHrDateString(date) {
-  const dateChunks = date.split('/');
-  const day = dateChunks[0];
-  const month = dateChunks[1];
-  const year = dateChunks[2];
-
-  return `${month}/${day}/${year}`;
 }
