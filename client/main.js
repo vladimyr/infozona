@@ -6,11 +6,12 @@ import http from 'axios';
 import format from 'date-fns/format';
 import hrLocale from 'date-fns/locale/hr'
 
+const Link = ({ link }) => link ? <a href={ link.url }>{ link.label }</a> : null;
+
+const Time = ({ time }) => time ? <span>@{ time } h</span> : null;
+
 function Event({ event }) {
   const { category, title, date, time, location, description, image, link } = event;
-  const Description = desc => ({ __html: desc });
-  const EventLink = ({ link }) => link ? <a href={ link.url }>{ link.label }</a> : null;
-  const EventTime = ({ time }) => time ? <span>@{ time } h</span> : null;
 
   return (
     <li className="event list-group-item">
@@ -19,12 +20,12 @@ function Event({ event }) {
         <h4>
           { location }
           &nbsp;
-          <EventTime time={ time }/>
+          <Time time={ time }/>
         </h4>
         <span className="label label-primary">{ category }</span>
       </div>
-      <p dangerouslySetInnerHTML={ Description(description) }></p>
-      <EventLink link={ link } />
+      <p dangerouslySetInnerHTML={{ __html: desc }}></p>
+      <Link link={ link } />
     </li>
   );
 }
