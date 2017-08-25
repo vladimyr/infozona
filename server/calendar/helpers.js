@@ -46,10 +46,10 @@ function readInfo($info) {
 function readPhotoUrl($photo) {
   if ($photo.length <= 0) return;
 
-  const match = $photo.attr('style').match(reUrl);
-  if (!match || !match[1]) return;
+  const match = $photo.attr('style').match(reUrl) || [];
+  if (!match) return;
 
-  const path = unquote(match[1].trim());
+  const path = unquote(match.trim());
   return url.resolve(baseUrl, path);
 }
 
