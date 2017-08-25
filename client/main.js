@@ -6,9 +6,9 @@ import http from 'axios';
 import format from 'date-fns/format';
 import hrLocale from 'date-fns/locale/hr'
 
-const Link = ({ link }) => link ? <a href={ link.url }>{ link.label }</a> : null;
+const Link = ({ link }) => <a href={ link.url }>{ link.label }</a>;
 
-const Time = ({ time }) => time ? <span>@{ time } h</span> : null;
+const Time = ({ time }) => <span>@{ time } h</span>;
 
 function Event({ event }) {
   const { category, title, date, time, location, description, image, link } = event;
@@ -20,12 +20,12 @@ function Event({ event }) {
         <h4>
           { location }
           &nbsp;
-          <Time time={ time }/>
+          { time && <Time time={ time }/>}
         </h4>
         <span className="label label-primary">{ category }</span>
       </div>
       <p dangerouslySetInnerHTML={{ __html: desc }}></p>
-      <Link link={ link } />
+      { link && <Link link={ link }/>}
     </li>
   );
 }
