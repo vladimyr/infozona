@@ -17,11 +17,11 @@ function Event({ event }) {
     <li className="event list-group-item">
       <h2>{ title }</h2>
       <div>
-        <h4>
-          { location }
+        <h3>
+          <span>{ location }</span>
           &nbsp;
           { time && <Time time={ time }/>}
-        </h4>
+        </h3>
         <span className="label label-primary">{ category }</span>
       </div>
       <p dangerouslySetInnerHTML={{ __html: desc }}></p>
