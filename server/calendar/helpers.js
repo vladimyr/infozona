@@ -17,8 +17,7 @@ module.exports = {
 
 function readDate($date) {
   let date = $date.text().trim();
-  date = normalizeDateString(date);
-  return reDate.test(date) ? date : formatDate(new Date());
+  return reDate.test(date) ? normalizeHrDateString(date) : formatDate(new Date());
 }
 
 function readTime($time) {
@@ -42,9 +41,7 @@ function readInfo($info) {
 function readPhotoUrl($photo) {
   if ($photo.length <= 0) return;
 
-  const match = $photo
-    .attr('style')
-    .match(reUrl);
+  const match = $photo.attr('style').match(reUrl);
   if (!match || !match[1]) return;
 
   const path = unquote(match[1].trim());
@@ -66,17 +63,15 @@ function formatDate(date) {
   return `${ month }/${ day }/${ year }`;
 }
 
-function normalizeDateString(date) {
+function normalizeHrDateString(date) {
   const dateChunks = date.split('/');
-  dateChunks.splice(0,0, dateChunks.splice(1,1)[0]);
-  return dateChunks.join('/');
+  const day = dateChunks[0];
+  const month = dateChunks[1];
+  const year = dateChunks[2];
+
+  return `${month}/${day}/${year}`;
 }
 
-function sanitizeHTML(data) {
-  return sanitizeHtml(data, {
-    textFilter(text) {
-      return text.replace(/\n/g, '<br>')
-    }
-  })
-}
+const textFilter = text => text.replace(/\n/g, '<br>');
 
+const sanitizeHTML = html => sanitizeHtml(html, textFilter);
