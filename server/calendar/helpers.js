@@ -10,6 +10,10 @@ const reUrl = /url\((.*?)\)/;
 
 const baseUrl = 'http://infozona.hr';
 
+const textFilter = text => text.replace(/\n/g, '<br>');
+
+const sanitizeHTML = html => sanitizeHtml(html, textFilter);
+
 module.exports = {
   readDate, readTime, readInfo,
   readPhotoUrl, readLink, sanitizeHTML
@@ -71,7 +75,3 @@ function normalizeHrDateString(date) {
 
   return `${month}/${day}/${year}`;
 }
-
-const textFilter = text => text.replace(/\n/g, '<br>');
-
-const sanitizeHTML = html => sanitizeHtml(html, textFilter);
