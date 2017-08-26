@@ -20,20 +20,22 @@ const parseDate = (str, fmt = DATE_FORMAT) => fecha.parse(str, fmt);
 const formatDate = date => date.toISOString();
 
 module.exports = function scrape($, $calendar) {
-  return $calendar.find('li a')
-    .map((_, day) => readDay($, $(day))).get();
+  const days = $calendar.find('li a')
+    .map((i, day) => readDay($, $(day), i !== 0 /* hasDate */)).get();
+  // Determine start date.
+  const startDate = dayBefore(new Date(days[1].date));
+  days[0].date = formatDate(startDate);
+  return days;
 };
 
-function readDay($, $el) {
+function readDay($, $el, hasDate = false) {
   const href = $el.attr('href');
+  // Parse date.
   const dateStr = $el.find('.dan').text().trim();
-  // Parse date if possible.
-  let date = dateStr !== 'Danas' && formatDate(parseDate(dateStr));
+  let date = hasDate && formatDate(parseDate(dateStr));
   // Collect events.
   const events = $(href).find('a')
     .map((_, el) => readEvent($, $(el))).get();
-  // Take date of first event if needed.
-  date = date || events[0].date;
   return { date, events };
 }
 
@@ -65,4 +67,10 @@ function readEvent($, $el) {
     image, link,
     ticket
   };
+}
+
+function dayBefore(date) {
+  const d = new Date(date.getTime());
+  d.setDate(date.getDate() - 1);
+  return d;
 }
