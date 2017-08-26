@@ -24,7 +24,7 @@ function Event({ event }) {
         </h4>
         <Category { ...category } />
       </div>
-      <p dangerouslySetInnerHTML={{ __html: description }}></p>
+      <p style={{ whiteSpace: 'pre-wrap' }}>{ description }</p>
       { link && <Link link={ link }/>}
     </li>
   );
