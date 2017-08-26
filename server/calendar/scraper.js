@@ -1,5 +1,3 @@
-'use strict';
-
 const fecha = require('fecha');
 const urlJoin = require('url-join');
 const { resolve } = require('url');

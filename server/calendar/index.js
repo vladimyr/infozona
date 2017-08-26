@@ -1,5 +1,3 @@
-'use strict';
-
 const request = require('pify')(require('request'), { multiArgs: true });
 const cheerio = require('cheerio');
 const entities = require('entities');
