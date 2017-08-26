@@ -1,23 +1,17 @@
 const request = require('pify')(require('request'), { multiArgs: true });
 const cheerio = require('cheerio');
 const entities = require('entities');
-const { parse } = require('url');
 const urlJoin = require('url-join');
 const scrape = require('./scraper.js');
 
 const baseUrl = 'http://infozona.hr';
 
-module.exports = (req, res, next) => {
-  const { query = {} } = parse(req.url, true);
-  return fetchCalendar(query.lang)
-    .then(calendar => res.json(calendar))
-    .catch(err => next(err));
-};
-module.exports.fetchCalendar = fetchCalendar;
+module.exports = fetchCalendar;
 
-function fetchCalendar(lang = 'hr') {
+function fetchCalendar(options = {}) {
+  const { lang = 'hr' } = options;
   const url = calendarUrl(lang);
-  return request.get(url)
+  return request.get(url, options)
     .then(([, body]) => {
       const html = entities.decode(body);
       const $ = cheerio.load(html);

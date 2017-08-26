@@ -2,9 +2,9 @@ const express = require('express');
 const ejs = require('ejs');
 const { readFileSync } = require('fs');
 const { join } = require('path');
+const { parse } = require('url');
 const { port = process.env.PORT } = require('../package.json').config;
-const calendar = require('./calendar/');
-const { fetchCalendar } = calendar;
+const fetchCalendar = require('./calendar/');
 
 const index = join(__dirname, '../dist/index.html');
 const dist = join(__dirname, '../dist');
@@ -27,3 +27,9 @@ function homepage(req, res) {
       res.send(html)
     });
 }
+
+function calendar(req, res) {
+  const { query = {} } = parse(req.url, true);
+  fetchCalendar(query.lang)
+    .then(cal => res.json(cal))
+};
