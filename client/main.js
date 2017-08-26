@@ -3,8 +3,9 @@
 import React from 'react';
 import { render } from 'react-dom';
 import http from 'axios';
-import moment from 'moment';
-moment.locale('hr');
+import fecha from 'fecha';
+
+const formatDate = (date, fmt) => fecha.format(new window.Date(date), fmt);
 
 const Link = ({ link }) => <a href={ link.url }>{ link.label }</a>;
 const Time = ({ time }) => <span>@{ time } h</span>;
@@ -14,13 +15,13 @@ function Event({ event }) {
 
   return (
     <li className="event list-group-item">
-      <h2>{ title }</h2>
+      <h3>{ title }</h3>
       <div>
-        <h3>
+        <h4>
           <span>{ location }</span>
           &nbsp;
           { time && <Time time={ time }/>}
-        </h3>
+        </h4>
         <span className="label label-primary">{ category }</span>
       </div>
       <p dangerouslySetInnerHTML={{ __html: description }}></p>
@@ -32,9 +33,9 @@ function Event({ event }) {
 function Date({ date, events }) {
   return (
     <div className="date">
-      <h1>{ moment(date).format('D. MMMM') }</h1>
+      <h2>{ formatDate(date, 'D. MMMM') }</h2>
       <ul className="list-group">
-        { events.map(event => <Event event={ event } />) }
+        { events.map(event => <Event event={ event } key={ event.id } />) }
       </ul>
     </div>
   );
@@ -43,7 +44,7 @@ function Date({ date, events }) {
 function Dates(dates) {
   return (
     <div className="dateList container">
-      { dates.map(({ date, events }) => <Date date={ date } events={ events } />) }
+      { dates.map(({ date, events }) => <Date date={ date } events={ events } key={ date } />) }
     </div>
   );
 }

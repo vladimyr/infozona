@@ -5,7 +5,7 @@ const cheerio = require('cheerio');
 const entities = require('entities');
 const { parse } = require('url');
 const urlJoin = require('url-join');
-const extractData = require('./scraper.js');
+const scrape = require('./scraper.js');
 
 const baseUrl = 'http://infozona.hr';
 
@@ -23,7 +23,7 @@ function fetchCalendar(lang = 'hr') {
       const html = entities.decode(body);
       const $ = cheerio.load(html);
       const $calendar = $('#kalendar');
-      return extractData($, $calendar);
+      return scrape($, $calendar);
     });
 }
 
