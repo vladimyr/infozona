@@ -54,7 +54,7 @@ const baseConfig = {
   plugins: [
     new HtmlWebpackPlugin({
       filename: path.join(__dirname, 'dist/index.html'),
-      template: path.join(__dirname, 'client/index.html'),
+      template: `!!html-loader!${ path.join(__dirname, 'client/index.html') }`,
       inject: true
     }),
     new ExtractTextPlugin('style.css')

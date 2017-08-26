@@ -1,5 +1,6 @@
 const path = require('path');
 const urlJoin = require('url-join');
+const ejs = require('ejs');
 const request = require('pify')(require('request'), { multiArgs: true });
 const interceptor = require('express-interceptor');
 const { port = process.env.PORT } = require('./package.json').config;
@@ -7,7 +8,6 @@ const { port = process.env.PORT } = require('./package.json').config;
 const baseUrl = `http://localhost:${port}`;
 const apiUrl = urlJoin(baseUrl, '/api/calendar');
 const isHtml = contetType => /text\/html/.test(contetType);
-const script = (code = '') => `<script>${code.trim()}</script>`;
 
 module.exports = {
   contentBase: path.join(__dirname, "dist"),
@@ -27,13 +27,11 @@ function setup(app) {
   })));
 }
 
-function intercept(body, send) {
+function intercept(html, send) {
   // Fetch data.
   request.get(apiUrl)
-    .then(([_, json]) => {
+    .then(([_, data]) => {
       // Inject preloaded data.
-      const data = script(`window.__PRELOADED_DATA__ = ${json};`);
-      return body.replace('<body>', `<body>${data}`);
+      send(ejs.render(html, { data }))
     })
-    .then(body => send(body));
 }
