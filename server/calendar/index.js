@@ -13,6 +13,7 @@ module.exports = (req, res, next) => {
     .then(calendar => res.json(calendar))
     .catch(err => next(err));
 };
+module.exports.fetchCalendar = fetchCalendar;
 
 function fetchCalendar(lang = 'hr') {
   const url = calendarUrl(lang);
