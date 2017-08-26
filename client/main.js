@@ -6,6 +6,9 @@ const formatDate = (date, fmt) => fecha.format(new window.Date(date), fmt);
 
 const Link = ({ link }) => <a href={ link.url } target="_blank">{ link.label }</a>;
 const Time = ({ time }) => <span>@{ time } h</span>;
+const Category = ({ type, label }) => (
+  <span className={ `label label-primary ${type}` }>{ label }</span>
+);
 
 function Event({ event }) {
   const { category, title, date, time, location, description, image, link } = event;
@@ -19,7 +22,7 @@ function Event({ event }) {
           &nbsp;
           { time && <Time time={ time }/>}
         </h4>
-        <span className={ `label label-primary ${ category.type }` }>{ category.label }</span>
+        <Category { ...category } />
       </div>
       <p dangerouslySetInnerHTML={{ __html: description }}></p>
       { link && <Link link={ link }/>}
