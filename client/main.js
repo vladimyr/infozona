@@ -19,7 +19,7 @@ function Event({ event }) {
           &nbsp;
           { time && <Time time={ time }/>}
         </h4>
-        <span className="label label-primary">{ category }</span>
+        <span className={ `label label-primary ${ category.type }` }>{ category.label }</span>
       </div>
       <p dangerouslySetInnerHTML={{ __html: description }}></p>
       { link && <Link link={ link }/>}

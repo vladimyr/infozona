@@ -1,6 +1,7 @@
 const fecha = require('fecha');
 const urlJoin = require('url-join');
 const { resolve } = require('url');
+const locale = require('./locale');
 const {
   readDate, readTime, readInfo,
   readPhotoUrl, readLink
@@ -8,20 +9,11 @@ const {
 
 const baseUrl = 'http://infozona.hr';
 const DATE_FORMAT = 'DD/MM/YYYY';
-const HR_LOCALES = {
-  location: 'Lokacija',
-  date: 'Datum',
-  price: 'Ulaznica',
-  category: 'Kategorija'
-};
-const EN_LOCALES = {
-  location: 'Location',
-  date: 'Date',
-  price: 'Price',
-  category: 'Category'
-};
 
-const getProp = (obj, prop, lc = HR_LOCALES) => obj[lc[prop]];
+const noop = Function.prototype;
+const findKey = (obj, fn = noop) => Object.keys(obj).find(key => fn(obj[key], key));
+const getProp = (obj, prop, lc) => obj[lc.fields[prop]];
+const parseCategory = (cat, lc) => findKey(lc.categories, it => it === cat);
 const parseDate = (str, fmt = DATE_FORMAT) => fecha.parse(str, fmt);
 const formatDate = date => date.toISOString();
 
@@ -50,16 +42,16 @@ function readEvent($, $el, lang = 'hr') {
   const $event = $(href);
   const $content = $(href).find('p');
 
-  const dateFormat = lang === 'en' ? 'DD/M/YYYY' : DATE_FORMAT;
-  const lc = lang === 'en' ? EN_LOCALES : HR_LOCALES;
+  // Handle localized content.
+  const lc = locale[lang];
 
   // Extract event information.
   const info = readInfo($content.eq(0));
 
   const [_, id] = href.split('_');
   const url = urlJoin(baseUrl, `/kalendar/${id}`);
-  const category = getProp(info, 'category', lc);
-  const date = formatDate(parseDate(getProp(info, 'date', lc)), dateFormat);
+  const category = readCategory(info, lc);
+  const date = formatDate(parseDate(getProp(info, 'date', lc)), lc.dateFormat);
   const time = readTime($el.find('.dan'));
   const location = getProp(info, 'location', lc);
   const title = $event.find('h2').text().trim();
@@ -76,6 +68,12 @@ function readEvent($, $el, lang = 'hr') {
     image, link,
     price
   };
+}
+
+function readCategory(info, lc) {
+  const label = getProp(info, 'category', lc);
+  const type = parseCategory(label, lc);
+  return { type, label };
 }
 
 function dayBefore(date) {
