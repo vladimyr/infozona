@@ -16,7 +16,7 @@ function fetchCalendar(options = {}) {
       const html = entities.decode(body);
       const $ = cheerio.load(html);
       const $calendar = $('#kalendar');
-      return scrape($, $calendar);
+      return scrape($, $calendar, lang);
     });
 }
 

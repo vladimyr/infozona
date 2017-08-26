@@ -12,24 +12,35 @@ const static = express.static(dist, { index: false });
 const render = ejs.compile(readFileSync(index, 'utf8'));
 
 const app = express();
-app.set('view engine', 'ejs');
+app.use(language);
 app.use('/api/calendar', calendar);
 app.use('/index.html', homepage);
 app.use(static);
 app.use('*', homepage);
-
+app.use((err, req, res, next) => {
+  console.error(err.message);
+  console.error(err.stack);
+  res.status(500);
+});
 app.listen(port, () => console.log(`Server listening on port ${port}`));
 
 function homepage(req, res) {
-  fetchCalendar()
+  fetchCalendar({ lang: req.lang })
     .then(cal => {
       const html = render({ data: JSON.stringify(cal) });
       res.send(html)
-    });
+    })
+    .catch(err => next(err));
 }
 
 function calendar(req, res) {
-  const { query = {} } = parse(req.url, true);
-  fetchCalendar(query.lang)
+  fetchCalendar({ lang: req.lang })
     .then(cal => res.json(cal))
-};
+    .catch(err => next(err));
+}
+
+function language(req, res, next) {
+  const { query = {} } = parse(req.url, true);
+  req.lang = query.lang;
+  next();
+}

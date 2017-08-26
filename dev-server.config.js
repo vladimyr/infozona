@@ -1,4 +1,5 @@
 const path = require('path');
+const { parse } = require('url');
 const urlJoin = require('url-join');
 const ejs = require('ejs');
 const request = require('pify')(require('request'), { multiArgs: true });
@@ -19,19 +20,26 @@ module.exports = {
 }
 
 function setup(app) {
+  app.use(language);
   app.use(interceptor((req, res) => ({
-    intercept,
     isInterceptable() {
       return isHtml(res.get('Content-Type'));
+    },
+    intercept(html, send) {
+      const qs = { lang: req.lang };
+      // Fetch data.
+      request.get(apiUrl, { qs })
+        .then(([_, data]) => {
+          // Inject preloaded data.
+          send(ejs.render(html, { data }))
+        })
     }
   })));
 }
 
-function intercept(html, send) {
-  // Fetch data.
-  request.get(apiUrl)
-    .then(([_, data]) => {
-      // Inject preloaded data.
-      send(ejs.render(html, { data }))
-    })
+function language(req, res, next) {
+  const { query = {} } = parse(req.url, true);
+  req.lang = query.lang;
+  next();
 }
+
