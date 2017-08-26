@@ -1,13 +1,11 @@
-'use strict';
-
 const path = require('path');
+const request = require('pify')(require('request'), { multiArgs: true });
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const defaultPort = require('./package.json').config.port;
+const devServer = require('./dev-server.config');
+const { port = process.env.PORT } = require('./package.json').config;
 
-const port = process.env.PORT || defaultPort;
-
-let baseConfig = {
+const baseConfig = {
   entry: [
     'bootstrap-loader',
     path.join(__dirname, './client/style.scss'),
@@ -63,18 +61,9 @@ let baseConfig = {
   ]
 };
 
-const devConfig = (() => {
-  const dev = {
-    devtool: 'eval',
-    devServer: {
-      contentBase: path.join(__dirname, "dist"),
-      noInfo: true,
-      proxy: {
-        '/api': `http://localhost:${port}`
-      }
-    }
-  };
-  return Object.assign({}, dev, baseConfig);
-})();
+const devConfig = Object.assign({}, baseConfig, {
+  devtool: 'eval',
+  devServer
+});
 
 module.exports = env => env === 'dev' ? devConfig : baseConfig;

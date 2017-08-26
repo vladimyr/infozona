@@ -1,6 +1,5 @@
 import React from 'react';
 import { render } from 'react-dom';
-import http from 'axios';
 import fecha from 'fecha';
 
 const formatDate = (date, fmt) => fecha.format(new window.Date(date), fmt);
@@ -47,10 +46,9 @@ function Dates(dates) {
   );
 }
 
-http.get('/api/calendar')
-  .then(({ data }) => Dates(data))
-  .then((dates) => {
-    render(dates,
-      document.getElementById('app')
-    );
-  });
+const data = window.__PRELOADED_DATA__;
+delete window.__PRELOADED_DATA__;
+render(
+  Dates(data),
+  document.getElementById('app')
+)
