@@ -4,7 +4,7 @@ import fecha from 'fecha';
 
 const formatDate = (date, fmt) => fecha.format(new window.Date(date), fmt);
 
-const Link = ({ link }) => <a href={ link.url }>{ link.label }</a>;
+const Link = ({ link }) => <a href={ link.url } target="_blank">{ link.label }</a>;
 const Time = ({ time }) => <span>@{ time } h</span>;
 
 function Event({ event }) {
