@@ -3,42 +3,39 @@
 import React from 'react';
 import { render } from 'react-dom';
 import http from 'axios';
-import format from 'date-fns/format';
-import hrLocale from 'date-fns/locale/hr'
+import fecha from 'fecha';
+
+const formatDate = (date, fmt) => fecha.format(new window.Date(date), fmt);
+
+const Link = ({ link }) => <a href={ link.url }>{ link.label }</a>;
+const Time = ({ time }) => <span>@{ time } h</span>;
 
 function Event({ event }) {
-  const EventLink = ({ link }) => link ? <a href={ link.url }>{ link.label }</a> : null;
-  const EventTime = ({ time }) => time ? <span>@{ time } h</span> : null;
-  const eventDescription = desc => ({ __html: desc.replace(/\n/g, '<br>')});
-  const eventCategory = event.info && event.info.Kategorija ? event.info.Kategorija : null;
+  const { category, title, date, time, location, description, image, link } = event;
 
   return (
-    <li className={ `event list-group-item ${ eventCategory ? eventCategory.toLowerCase() : null }` }>
-      <h2>{ event.title }</h2>
-      <p>
+    <li className="event list-group-item">
+      <h3>{ title }</h3>
+      <div>
         <h4>
-          { event.info && event.info.Lokacija ? event.info.Lokacija : null }
+          <span>{ location }</span>
           &nbsp;
-          <EventTime time={event.time}/>
+          { time && <Time time={ time }/>}
         </h4>
-        <span className="label label-primary">{ eventCategory }</span>
-      </p>
-      <p dangerouslySetInnerHTML={ eventDescription(event.description) }></p>
-      <EventLink link={ event.link } />
+        <span className="label label-primary">{ category }</span>
+      </div>
+      <p dangerouslySetInnerHTML={{ __html: description }}></p>
+      { link && <Link link={ link }/>}
     </li>
   );
 }
 
 function Date({ date, events }) {
-  const dateChunks = date.split('/');
-  const normalizedDateString = `${dateChunks[1]}/${dateChunks[0]}`
-  const formatedDate = format(normalizedDateString, 'D. MMMM', { locale: hrLocale })
-
   return (
     <div className="date">
-      <h1>{ formatedDate }</h1>
+      <h2>{ formatDate(date, 'D. MMMM') }</h2>
       <ul className="list-group">
-        { events.map(event => <Event event={ event } />) }
+        { events.map(event => <Event event={ event } key={ event.id } />) }
       </ul>
     </div>
   );
@@ -47,7 +44,7 @@ function Date({ date, events }) {
 function Dates(dates) {
   return (
     <div className="dateList container">
-      { dates.map(({ date, events }) => <Date date={ date } events={ events } />) }
+      { dates.map(({ date, events }) => <Date date={ date } events={ events } key={ date } />) }
     </div>
   );
 }
