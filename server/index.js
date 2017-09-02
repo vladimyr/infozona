@@ -6,7 +6,8 @@ const { parse } = require('url');
 const { port = process.env.PORT } = require('../package.json').config;
 const fetchCalendar = require('./calendar/');
 
-const index = join(__dirname, '../dist/index.html');
+const isDev = process.env.NODE_ENV === 'development';
+const index = join(__dirname, isDev ? '../client/index.html' : '../dist/index.html');
 const dist = join(__dirname, '../dist');
 const static = express.static(dist, { index: false });
 const render = ejs.compile(readFileSync(index, 'utf8'));
