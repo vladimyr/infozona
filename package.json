@@ -34,6 +34,7 @@
     "pify": "^3.0.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
+    "react-linkifier": "^3.1.1",
     "request": "^2.81.0",
     "sanitize-html": "^1.14.1",
     "unquote": "^1.1.0",

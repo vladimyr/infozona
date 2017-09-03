@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
+import { linkifier } from 'react-linkifier';
 import fecha from 'fecha';
 
 const formatDate = (date, fmt) => fecha.format(new window.Date(date), fmt);
@@ -24,7 +25,9 @@ function Event({ event }) {
         </h4>
         <Category { ...category } />
       </div>
-      <p style={{ whiteSpace: 'pre-wrap' }}>{ description }</p>
+      <p style={{ whiteSpace: 'pre-wrap' }}>
+        { linkifier(description, { target: '_blank' }) }
+      </p>
       { link && <Link link={ link }/>}
     </li>
   );
