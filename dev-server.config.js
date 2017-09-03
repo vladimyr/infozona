@@ -1,5 +1,5 @@
 const path = require('path');
-const { parse } = require('url');
+const { parse: parseUrl } = require('url');
 const urlJoin = require('url-join');
 const ejs = require('ejs');
 const request = require('pify')(require('request'), { multiArgs: true });
@@ -11,11 +11,7 @@ const apiUrl = urlJoin(baseUrl, '/api/calendar');
 const isHtml = contetType => /text\/html/.test(contetType);
 
 module.exports = {
-  contentBase: path.join(__dirname, "dist"),
-  noInfo: true,
-  proxy: {
-    '/api': baseUrl,
-  },
+  proxy: { '/api': baseUrl },
   setup
 }
 
@@ -38,7 +34,7 @@ function setup(app) {
 }
 
 function language(req, res, next) {
-  const { query = {} } = parse(req.url, true);
+  const { query = {} } = parseUrl(req.url, true);
   req.lang = query.lang;
   next();
 }

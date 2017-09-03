@@ -1,7 +1,12 @@
 const path = require('path');
 const devServer = require('./dev-server.config');
 
-module.exports = {
+const rules = [{
+  test: /bootstrap-sass[\/\\]assets[\/\\]javascripts[\/\\]/,
+  use: 'imports-loader?jQuery=jquery'
+}];
+
+module.exports = (options) => ({
   entry: [
     require.resolve('bootstrap-loader'),
     './client/style.scss',
@@ -13,11 +18,9 @@ module.exports = {
     inject: true
   },
   webpack(config) {
-    config.module.rules.push({
-      test: /bootstrap-sass[\/\\]assets[\/\\]javascripts[\/\\]/,
-      use: 'imports-loader?jQuery=jquery'
-    });
+    config.module.rules.push(...rules);
     return config;
   },
+  sourceMap: options.mode === 'development',
   devServer
-};
+});
