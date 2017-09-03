@@ -8,6 +8,7 @@
     "dev": "poi & NODE_ENV=development nodemon server/index.js",
     "build": "poi build",
     "clean": "del-cli dist/* !dist/.gitkeep",
+    "deploy": "now --public",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
